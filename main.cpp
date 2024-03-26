@@ -306,15 +306,16 @@ int main(void)
     calibrateArmAtStart();
 
 
-    RCS.InitializeTouchMenu("B3eWV1yBh");
+    //RCS.InitializeTouchMenu("B3eWV1yBh");
     //Get correct lever from the RCS
-    int correctLever = RCS.GetCorrectLever();
+    //int correctLever = RCS.GetCorrectLever();
+    int correctLever = 0;
     LCD.Clear();
     LCD.Write(correctLever);
 
     while (CdS_cell.Value()>2.75)
     {
-        LCD.WriteLine(CdS_cell.Value());
+       LCD.WriteLine(CdS_cell.Value());
     }
 
     LCD.WriteLine("Starting");
@@ -395,6 +396,16 @@ int main(void)
    
    Sleep(5.0);
    */
+  driveInches(70,30);
+  servo.SetDegree(170);
+  Sleep(1.0);
+  driveInches(50,4);
+  servo.SetDegree(130);
+  Sleep(1.0);
+  driveInches(50,10);
+  Sleep(1.0);
+  driveInches(-50,10);
+  Sleep(60.0);
     rightPower=rightPower*-1;
     right_motor.SetPercent(rightPower);
     left_motor.SetPercent(leftPower);
@@ -417,13 +428,15 @@ int main(void)
     Sleep(1.0);
     servo.SetDegree(175);
     Sleep(1.0);
-    driveInches(-50,4.0);
+    driveInches(-50,12.0);
+    rotateDegree(50,30);
+    driveInches(50,40);
 
     //driveInches(-50,6);
     //Sleep(1.0);
     //rotateDegree(-50,90);
   
 
-
+    //hi
 }
 
