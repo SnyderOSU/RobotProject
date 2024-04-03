@@ -137,6 +137,59 @@ void driveInches(int percent, float inches) //using encoders
     right_motor.Stop();
     left_motor.Stop();
 }
+void driveInchesCrayola(int percent, float inches) //using encoders
+{
+    //Reset encoder counts
+    right_encoder.ResetCounts();
+    left_encoder.ResetCounts();
+
+    //Set both motors to desired percent
+
+    int counts = (inches/(2.5*Pi))*318;
+    LCD.Clear();
+    LCD.Write("Driving Distance: ");
+    LCD.WriteLine(inches);
+    right_motor.SetPercent(percent);
+    left_motor.SetPercent(-percent);
+    //While the average of the left and right encoder is less than counts,
+    //keep running motors
+    while(((left_encoder.Counts()+right_encoder.Counts())/2)<=counts)
+    {
+    LCD.WriteLine(" ");
+    LCD.WriteLine(left_encoder.Counts());
+    LCD.WriteLine(right_encoder.Counts());
+    }
+    //Turn off motors
+    right_motor.Stop();
+    left_motor.Stop();
+}
+void rotateDegreesLeftCrayola(int percent, int degrees) //using encoders
+{
+    //Reset encoder counts
+    right_encoder.ResetCounts();
+    left_encoder.ResetCounts();
+
+    //Set both motors to desired percent
+
+    double inches=((7*Pi)/360)*degrees;
+    int counts = (inches/(2.5*Pi))*318;
+    LCD.Clear();
+    LCD.Write("Driving Distance: ");
+    LCD.WriteLine(inches);
+    right_motor.SetPercent(percent);
+    left_motor.SetPercent(percent);
+    //While the average of the left and right encoder is less than counts,
+    //keep running motors
+    while(((left_encoder.Counts()+right_encoder.Counts())/2)<=counts)
+    {
+    LCD.WriteLine(" ");
+    LCD.WriteLine(left_encoder.Counts());
+    LCD.WriteLine(right_encoder.Counts());
+    }
+    //Turn off motors
+    right_motor.Stop();
+    left_motor.Stop();
+}
 
 void MoveDistance(float dist)
 {
@@ -306,7 +359,7 @@ int main(void)
     calibrateArmAtStart();
 
 
-    //RCS.InitializeTouchMenu("B3eWV1yBh");
+    RCS.InitializeTouchMenu("B3eWV1yBh");
     //Get correct lever from the RCS
     //int correctLever = RCS.GetCorrectLever();
     int correctLever = 0;
@@ -322,20 +375,29 @@ int main(void)
     left_encoder.ResetCounts();
     right_encoder.ResetCounts();
 
-    LCD.Clear();
-    LCD.WriteLine("Starting"); 
-    /*
-    move to luggage drop
-    driveInches(50,6);s
+    //hit start button
+    driveInches(-50,2);
+    Sleep(.5);
+    driveInches(50,2);
+
+    // move to luggage drop
+    driveInches(50,4);
     Sleep(.2);
     left_motor.SetPercent(50);
     right_motor.SetPercent(-20);
     Sleep(2.5);
     right_motor.SetPercent(-50);
-    Sleep(2.0);
+    Sleep(1.0);
     left_motor.Stop();
     right_motor.Stop();
-    */
+    servo.SetDegree(90);
+    Sleep(2.0);
+    driveInches(-50,6);
+    rotateDegree(50,50);
+    driveInches(50,28);
+    Sleep(120.0);
+
+    //
     servo.SetDegree(80);
     Sleep(1.0);
 
