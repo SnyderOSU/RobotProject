@@ -23,6 +23,7 @@
 #define DriveWheelDiameter 3
 #define Pi 3.14
 #define degreeConvert 0.018362174
+#define degreeConvertOld 0.018362174
 #define blueval 1
 #define redval 0
 
@@ -30,37 +31,14 @@
 #define SERVO_MAX 1900
 
 FEHServo servo(FEHServo::Servo0);
-
 FEHMotor left_motor(FEHMotor::Motor0,9.0);
 FEHMotor right_motor(FEHMotor::Motor2,9.0);
 AnalogInputPin CdS_cell(FEHIO::P2_3);
-
 DigitalEncoder right_encoder(FEHIO::P0_1);
 DigitalEncoder left_encoder(FEHIO::P0_3);
 
-//positive percent is to the right
-void rotateAprox(int percent, int counts) //using encoders
-{
-    //Reset encoder counts
-    right_encoder.ResetCounts();
-    left_encoder.ResetCounts();
 
-    //Set both motors to desired percent
-    right_motor.SetPercent(percent);
-    left_motor.SetPercent(percent);
-
-    //While the average of the left and right encoder is less than counts,
-    //keep running motors
-    while((left_encoder.Counts()+right_encoder.Counts())/2<=counts)
-    {
-
-    }
-
-    //Turn off motors
-    right_motor.Stop();
-    left_motor.Stop();
-}
-
+//rotates to the right on positive percent and to the left on negative percent
 void rotateDegree(int percent, int degree) //using encoders
 {
     int counts=318*degreeConvert*degree;
@@ -84,33 +62,7 @@ void rotateDegree(int percent, int degree) //using encoders
     right_motor.Stop();
     left_motor.Stop();
 }
-void rotateTime(int percent, float time) //using encoders
-{
-    //Reset encoder counts
-    right_encoder.ResetCounts();
-    left_encoder.ResetCounts();
 
-    //Set both motors to desired percent
-    right_motor.SetPercent(percent);
-    left_motor.SetPercent(percent);
-
-    Sleep(time);
-    //While the average of the left and right encoder is less than counts,
-    //keep running motors
-    //Turn off motors
-    right_motor.Stop();
-    left_motor.Stop();
-}
-
-
-void driveTime(int percent,float time)
-{
-    left_motor.SetPercent(percent);
-    right_motor.SetPercent(-percent);
-    Sleep(time);
-    left_motor.Stop();
-    right_motor.Stop();
-}
 void driveInches(int percent, float inches) //using encoders
 {
     //Reset encoder counts
@@ -137,207 +89,27 @@ void driveInches(int percent, float inches) //using encoders
     right_motor.Stop();
     left_motor.Stop();
 }
-void driveInchesCrayola(int percent, float inches) //using encoders
+
+
+void gradualTurn(int percentLeft,int percentRight, double time) //using encoders
 {
     //Reset encoder counts
     right_encoder.ResetCounts();
     left_encoder.ResetCounts();
 
     //Set both motors to desired percent
-
-    int counts = (inches/(2.5*Pi))*318;
     LCD.Clear();
-    LCD.Write("Driving Distance: ");
-    LCD.WriteLine(inches);
-    right_motor.SetPercent(percent);
-    left_motor.SetPercent(-percent);
+    right_motor.SetPercent(-percentRight);
+    left_motor.SetPercent(percentLeft);
     //While the average of the left and right encoder is less than counts,
     //keep running motors
-    while(((left_encoder.Counts()+right_encoder.Counts())/2)<=counts)
-    {
-    LCD.WriteLine(" ");
-    LCD.WriteLine(left_encoder.Counts());
-    LCD.WriteLine(right_encoder.Counts());
-    }
-    //Turn off motors
-    right_motor.Stop();
-    left_motor.Stop();
-}
-void rotateDegreesLeftCrayola(int percent, int degrees) //using encoders
-{
-    //Reset encoder counts
-    right_encoder.ResetCounts();
-    left_encoder.ResetCounts();
-
-    //Set both motors to desired percent
-
-    double inches=((7*Pi)/360)*degrees;
-    int counts = (inches/(2.5*Pi))*318;
-    LCD.Clear();
-    LCD.Write("Driving Distance: ");
-    LCD.WriteLine(inches);
-    right_motor.SetPercent(percent);
-    left_motor.SetPercent(percent);
-    //While the average of the left and right encoder is less than counts,
-    //keep running motors
-    while(((left_encoder.Counts()+right_encoder.Counts())/2)<=counts)
-    {
-    LCD.WriteLine(" ");
-    LCD.WriteLine(left_encoder.Counts());
-    LCD.WriteLine(right_encoder.Counts());
-    }
+    Sleep(time);
     //Turn off motors
     right_motor.Stop();
     left_motor.Stop();
 }
 
-void MoveDistance(float dist)
-{
-    //motor ramping
-    LCD.WriteLine("Performing Ramping Up");
-    for(int i =0;i<=50;i++)
-    {
-        left_motor.SetPercent(i);
-        right_motor.SetPercent(-i);
-        LCD.Clear();
-        LCD.WriteLine("Motor %: "+i);
-        Sleep(.25);
-    }
-        LCD.WriteLine("Performing Ramping Down");
-        for(int i =50;i>=0;i--)
-    {
-        left_motor.SetPercent(i);
-        right_motor.SetPercent(-i);
-        LCD.Clear();
-        LCD.WriteLine("Motor %: "+i);
-        Sleep(.25);
-    }
-    LCD.WriteLine("Stopping");
-    left_motor.Stop();
-    right_motor.Stop();
-}
 
-void RightMotorPower(int power)
-{
-    right_motor.SetPercent(-power);
-}
-void LeftMotorPower(int power)
-{
-    left_motor.SetPercent(power);
-}
-
-void RotateRight(double time)
-{
-
-    LCD.Clear();
-    LCD.WriteLine("Rotating Right");
-    RightMotorPower(-40);
-    LeftMotorPower(40);
-    Sleep(time);
-    LCD.Clear();
-    LCD.WriteLine("Done Rotating");
-        RightMotorPower(0);
-    LeftMotorPower(0);
-}
-
-void RotateLeft(double time)
-{
-    LCD.Clear();
-    LCD.WriteLine("Rotating Left");
-    RightMotorPower(40);
-    LeftMotorPower(-40);
-    Sleep(time);
-    LCD.Clear();
-    LCD.WriteLine("Done Rotating");
-        RightMotorPower(0);
-    LeftMotorPower(0);
-}
-
-void Drive(int direction,double time)
-{
-    LCD.Clear();
-    LCD.WriteLine("Move Forward");
-    RightMotorPower(direction*40);
-    LeftMotorPower(direction*40);
-    Sleep(time);
-    LCD.Clear();
-    LCD.WriteLine("Done Moving Forward");
-    RightMotorPower(0);
-    LeftMotorPower(0);
-}
-void DriveForward(double time)
-{
-    LCD.Clear();
-    LCD.WriteLine("Move Forward");
-    RightMotorPower(40);
-    LeftMotorPower(40);
-    Sleep(time);
-    LCD.Clear();
-    LCD.WriteLine("Done Moving Forward");
-    RightMotorPower(0);
-    LeftMotorPower(0);
-}
-void DriveBackward(double time)
-{
-    LCD.Clear();
-    LCD.WriteLine("Move Backward");
-    RightMotorPower(-40);
-    LeftMotorPower(-40);
-    Sleep(time);
-    LCD.Clear();
-    LCD.WriteLine("Done Moving Backward");
-    RightMotorPower(0);
-    LeftMotorPower(0);
-}
-
-void DriveTurnRight(double time,int ratio)
-{
-    LCD.Clear();
-    LCD.WriteLine("Move Forward Partial Right");
-    RightMotorPower(40/ratio);
-    LeftMotorPower(40);
-    Sleep(time);
-    LCD.Clear();
-    LCD.WriteLine("Done Moving Forward");
-    RightMotorPower(0);
-    LeftMotorPower(0);
-}
-void DriveTurnLeft(double time,int ratio)
-{
-    LCD.Clear();
-    LCD.WriteLine("Move Forward Partial Left");
-    RightMotorPower(40);
-    LeftMotorPower(40/ratio);
-    Sleep(time);
-    LCD.Clear();
-    LCD.WriteLine("Done Moving Forward");
-    RightMotorPower(0);
-    LeftMotorPower(0);
-}
-void DriveBackTurnLeft(double time,int ratio)
-{
-    LCD.Clear();
-    LCD.WriteLine("Move Backward Partial Left");
-    RightMotorPower(-40);
-    LeftMotorPower(-40/ratio);
-    Sleep(time);
-    LCD.Clear();
-    LCD.WriteLine("Done Moving Backward");
-    RightMotorPower(0);
-    LeftMotorPower(0);
-}
-void DriveBackTurnRight(double time,int ratio)
-{
-    LCD.Clear();
-    LCD.WriteLine("Move Backward Partial Right");
-    RightMotorPower(-40/ratio);
-    LeftMotorPower(-40);
-    Sleep(time);
-    LCD.Clear();
-    LCD.WriteLine("Done Moving Backward");
-    RightMotorPower(0);
-    LeftMotorPower(0);
-}
 void calibrateArmAtStart()
 {
     servo.SetMin(SERVO_MIN);
@@ -346,6 +118,42 @@ void calibrateArmAtStart()
     //Sleep(1.0);
     //servo.SetDegree(1);
     //Sleep(1.0);
+}
+float moveWhileSensing(int percent,float inches)
+{
+    int counts = (inches/(DriveWheelDiameter*Pi))*318;
+    LCD.Clear();
+    int low = 4;
+    left_motor.SetPercent(percent);
+    right_motor.SetPercent(-percent);
+    while(((left_encoder.Counts()+right_encoder.Counts())/2)<=counts)
+    {
+        float val = CdS_cell.Value();
+        if (val<low)
+        {
+            low=val;
+            LCD.Write("Predicted For: ");
+            LCD.Write(low);
+            /*
+            if(low<.7)
+            {
+                LCD.SetFontColor(RED);
+                LCD.WriteLine(": Red");
+                LCD.SetFontColor(BLACK);
+            }
+            else{
+                LCD.SetFontColor(BLUE);
+                LCD.WriteLine(": Blue");
+                LCD.SetFontColor(BLACK);
+            }
+            */
+        }
+
+    }
+    left_motor.Stop();
+    right_motor.Stop();
+    return low;
+
 }
 /* Main function to control menu system */
 
@@ -361,14 +169,18 @@ int main(void)
 
     RCS.InitializeTouchMenu("B3eWV1yBh");
     //Get correct lever from the RCS
-    //int correctLever = RCS.GetCorrectLever();
-    int correctLever = 0;
+    int correctLever = RCS.GetCorrectLever();
+
+    
+    //int correctLever = 1;
     LCD.Clear();
     LCD.Write(correctLever);
+    
 
     while (CdS_cell.Value()>2.75)
     {
        LCD.WriteLine(CdS_cell.Value());
+       LCD.WriteLine("Final Action Done");
     }
 
     LCD.WriteLine("Starting");
@@ -377,11 +189,12 @@ int main(void)
 
     //hit start button
     driveInches(-50,2);
-    Sleep(.5);
+    Sleep(.1);
     driveInches(50,2);
 
     // move to luggage drop
-    driveInches(50,4);
+    //was 4.5
+    driveInches(50,4.5);
     Sleep(.2);
     left_motor.SetPercent(50);
     right_motor.SetPercent(-20);
@@ -391,89 +204,13 @@ int main(void)
     left_motor.Stop();
     right_motor.Stop();
     servo.SetDegree(90);
-    Sleep(2.0);
-    driveInches(-50,6);
-    rotateDegree(50,50);
-    driveInches(50,28);
-    Sleep(120.0);
-
-    //
-    servo.SetDegree(80);
     Sleep(1.0);
+    //old values -50 -15 1.8
+    gradualTurn(-50,-14,1.8);
+    driveInches(-50,10);
+    //final step for luggage over
 
-    double leftPower = 17;
-    double rightPower = 50;
-    float x_position, y_position;
-    /*
-    while(true)
-    {
-    LCD.ClearBuffer();
-    LCD.Touch(&x_position, &y_position);
-    while(x_position<250)
-   { 
-    LCD.ClearBuffer();
-    Sleep(.1);
-    if(LCD.Touch(&x_position, &y_position)){
-        LCD.Clear();
-        LCD.WriteLine(y_position);
-        if(x_position<125)
-        {
-            leftPower--;
-        }
-        else if(x_position<250)
-        {
-            leftPower++;
-        }
-        LCD.WriteLine(leftPower);
-    }
-    LCD.ClearBuffer();
-    Sleep(.5);
-    x_position=20;
-    LCD.Touch(&x_position, &y_position);
-   }
-       while(x_position<250)
-   { 
-    LCD.ClearBuffer();
-    Sleep(.1);
-    if(LCD.Touch(&x_position, &y_position)){
-        LCD.Clear();
-        if(x_position<125)
-        {
-            rightPower--;
-        }
-        else if(x_position<250)
-        {
-            rightPower++;
-        }
-        LCD.WriteLine(rightPower);
-    }
-    LCD.Touch(&x_position, &y_position);
-   }
-   LCD.Clear();
-   rightPower=rightPower*-1;
-   LCD.WriteLine("Left Motor Power");
-   LCD.WriteLine(leftPower);
-   LCD.WriteLine("Right Motor Power");
-   LCD.WriteLine(rightPower);
-   
-   Sleep(5.0);
-   */
-  driveInches(70,30);
-  servo.SetDegree(170);
-  Sleep(1.0);
-  driveInches(50,4);
-  servo.SetDegree(130);
-  Sleep(1.0);
-  driveInches(50,10);
-  Sleep(1.0);
-  driveInches(-50,10);
-  Sleep(60.0);
-    rightPower=rightPower*-1;
-    right_motor.SetPercent(rightPower);
-    left_motor.SetPercent(leftPower);
-    Sleep(.85);
-    left_motor.Stop();
-    right_motor.Stop();
+    driveInches(50,9);
     Sleep(1.0);
     driveInches(50,correctLever*2.0);
     servo.SetDegree(170);
@@ -490,15 +227,119 @@ int main(void)
     Sleep(1.0);
     servo.SetDegree(175);
     Sleep(1.0);
-    driveInches(-50,12.0);
-    rotateDegree(50,30);
-    driveInches(50,40);
+    driveInches(-50,correctLever*2.0);
+    //up agaisnt wall
+    //driveInches(-50,12.0);
+    gradualTurn(-50,-15,2);
+    //driveInches(50,10);
+    servo.SetDegree(2);
+    Sleep(1.0);
+    //driving up ramp
+    driveInches(-50,15.5);
+    gradualTurn(-50,-6,.56);
+    //done with gradual
+    driveInches(-50,15);
+    Sleep(1.0);
+    float val = moveWhileSensing(-50,30);
+    LCD.WriteLine(val);
+    Sleep(3.0);
+    driveInches(50,20);
+    Sleep(1.0);
+    gradualTurn(-50,-4,.5);
+    Sleep(1.0);
+    driveInches(-50,20);
+    Sleep(1.0);
+    //test default >.7 = blue
+    //int val=.8;
+    LCD.WriteLine(val);
 
-    //driveInches(-50,6);
-    //Sleep(1.0);
-    //rotateDegree(-50,90);
-  
+    //deafults to blue
+    val = .8;
+    if (val<.7)
+    {
+        //drive to far button which is red
+        LCD.SetFontColor(RED);
+        LCD.WriteLine(": Red");
+        LCD.SetFontColor(BLACK);
+        Sleep(1.0);
+        driveInches(50,10);
+        
+    }
+    else
+    {
+        LCD.SetFontColor(BLUE);
+        LCD.WriteLine(": Blue");
+        LCD.SetFontColor(BLACK);
+        Sleep(1.0);
+        //was 5
+        driveInches(50,4);
+    }
+    Sleep(2.0);
+    gradualTurn(-7,50,1);
+    Sleep(1.0);
+    driveInches(60,15);
+    Sleep(1.0);
+    gradualTurn(7,-50,1.5);
+    Sleep(1.0);
+    driveInches(-50,15);
+    Sleep(1.0);
+    //now for passport
+    gradualTurn(29,50,1.8);
+    Sleep(.5);
+    driveInches(50,10);
+    right_motor.SetPercent(-50);
+    Sleep(.5);
+    right_motor.Stop();
+    driveInches(-50,6);
+    servo.SetDegree(179);
+    Sleep(2.0);
+    driveInches(50,2);
+    Sleep(1.0);
+    driveInches(-50,.4);
+    servo.SetDegree(140);
+    Sleep(2.0);
+    right_motor.SetPercent(-50);
+    Sleep(1.0);
+    right_motor.Stop();
+    servo.SetDegree(110);
+    Sleep(1.0);
+    right_motor.SetPercent(-50);
+    left_motor.SetPercent(10);
+    Sleep(1.0);
+    left_motor.Stop();
+    right_motor.Stop();
+    Sleep(1.0);
+    driveInches(-50,5);
+    servo.SetDegree(2);
+    //now get back to start
+    //gradualTurn(50,30,2);
+    left_motor.SetPercent(30);
+    Sleep(1.1);
+    left_motor.Stop();
+    driveInches(50,25);
+    Sleep(1.0);
+    right_motor.SetPercent(-50);
+    Sleep(2.0);
+    right_motor.Stop();
+    Sleep(1.0);
+    driveInches(-50,.2);
+    gradualTurn(7,-50,1);
+    Sleep(1.0);
+    driveInches(-50,4);
+    Sleep(1.0);
+    driveInches(60,40);
+    right_motor.SetPercent(-75);
+    Sleep(2.0);
+    right_motor.Stop();
+    while (true)
+    {
+        driveInches(-50,3);
+        gradualTurn(50,45,1);
+        driveInches(60,3);
+        right_motor.SetPercent(-75);
+        Sleep(1.0);
+        right_motor.Stop();
+    }
 
-    //hi
 }
 
