@@ -2,7 +2,7 @@
 /*      Proteus Robot Code      */
 /*     OSU FEH Spring 2024      */
 /*        Evan Snyder           */
-/*    02/28/24  Version 1.0.0   */
+/*    4/15/24  Version 1.0.0   */
 /********************************/
 
 
@@ -170,6 +170,7 @@ int main(void)
     RCS.InitializeTouchMenu("B3eWV1yBh");
     //Get correct lever from the RCS
     int correctLever = RCS.GetCorrectLever();
+    //int correctLever = 1;
 
     
     //int correctLever = 1;
@@ -206,6 +207,7 @@ int main(void)
     servo.SetDegree(90);
     Sleep(1.0);
     //old values -50 -15 1.8
+    //can lower to -50 -14 1.8
     gradualTurn(-50,-14,1.8);
     driveInches(-50,10);
     //final step for luggage over
@@ -247,7 +249,8 @@ int main(void)
     Sleep(1.0);
     gradualTurn(-50,-4,.5);
     Sleep(1.0);
-    driveInches(-50,20);
+    //was 20
+    driveInches(-50,27);
     Sleep(1.0);
     //test default >.7 = blue
     //int val=.8;
@@ -275,21 +278,24 @@ int main(void)
         driveInches(50,4);
     }
     Sleep(2.0);
-    gradualTurn(-7,50,1);
+    //was 1.0
+    gradualTurn(-7,50,1.2);
     Sleep(1.0);
-    driveInches(60,15);
+    //was 15
+    driveInches(60,20);
     Sleep(1.0);
     gradualTurn(7,-50,1.5);
     Sleep(1.0);
     driveInches(-50,15);
     Sleep(1.0);
     //now for passport
-    gradualTurn(29,50,1.8);
+    //was 29 50 1.8
+    gradualTurn(25,50,1.8);
     Sleep(.5);
     driveInches(50,10);
-    right_motor.SetPercent(-50);
-    Sleep(.5);
-    right_motor.Stop();
+    //right_motor.SetPercent(-50);
+    //Sleep(.5);
+    //right_motor.Stop();
     driveInches(-50,6);
     servo.SetDegree(179);
     Sleep(2.0);
@@ -298,7 +304,8 @@ int main(void)
     driveInches(-50,.4);
     servo.SetDegree(140);
     Sleep(2.0);
-    right_motor.SetPercent(-50);
+    //was -50
+    right_motor.SetPercent(-75);
     Sleep(1.0);
     right_motor.Stop();
     servo.SetDegree(110);
@@ -309,28 +316,38 @@ int main(void)
     left_motor.Stop();
     right_motor.Stop();
     Sleep(1.0);
+    servo.SetDegree(80);
+    Sleep(1.0);
+    driveInches(50,1);
+    Sleep(1.0);
     driveInches(-50,5);
     servo.SetDegree(2);
     //now get back to start
     //gradualTurn(50,30,2);
     left_motor.SetPercent(30);
-    Sleep(1.1);
+    Sleep(1.7);
     left_motor.Stop();
+    gradualTurn(30,50,3);
     driveInches(50,25);
     Sleep(1.0);
-    right_motor.SetPercent(-50);
-    Sleep(2.0);
-    right_motor.Stop();
+    //was -50
+    //right_motor.SetPercent(-80);
+    //Sleep(1.0);
+    //right_motor.Stop();
     Sleep(1.0);
     driveInches(-50,.2);
     gradualTurn(7,-50,1);
     Sleep(1.0);
     driveInches(-50,4);
     Sleep(1.0);
-    driveInches(60,40);
+    driveInches(60,38);
     right_motor.SetPercent(-75);
     Sleep(2.0);
     right_motor.Stop();
+    Sleep(1.0);
+    right_motor.SetPercent(60);
+    Sleep(1.0);
+    driveInches(60,10);
     while (true)
     {
         driveInches(-50,3);
