@@ -196,7 +196,7 @@ int main(void)
     // move to luggage drop
     //was 4.5
     driveInches(50,4.5);
-    Sleep(.2);
+    Sleep(.1);
     left_motor.SetPercent(50);
     right_motor.SetPercent(-20);
     Sleep(2.5);
@@ -208,50 +208,58 @@ int main(void)
     Sleep(1.0);
     //old values -50 -15 1.8
     //can lower to -50 -14 1.8
-    gradualTurn(-50,-14,1.8);
+    //---------------------------------------------------------------------------------
+    gradualTurn(-50,-15,1.8);
     driveInches(-50,10);
     //final step for luggage over
 
     driveInches(50,9);
-    Sleep(1.0);
-    driveInches(50,correctLever*2.0);
+    Sleep(.1);
+    //was 2.0
+    driveInches(50,correctLever*2.1);
     servo.SetDegree(170);
     Sleep(1.0);
     servo.SetDegree(80);
     Sleep(1.0);
     double time = TimeNowSec();
-    driveInches(-50,4.0+correctLever*2.0);
+    driveInches(-50,4.0+correctLever*2.1);
     servo.SetDegree(175);
     Sleep(1.0);
-    driveInches(50,4.0+correctLever*2.0);
+    driveInches(50,4.0+correctLever*2.1);
     while((TimeNowSec()-time)<5.0);
     servo.SetDegree(1);
     Sleep(1.0);
     servo.SetDegree(175);
     Sleep(1.0);
-    driveInches(-50,correctLever*2.0);
+    //can remove below line
+    driveInches(50,.5);
+    driveInches(-50,(correctLever*2.1));
     //up agaisnt wall
     //driveInches(-50,12.0);
-    gradualTurn(-50,-15,2);
+    //was -50 -15 2
+    gradualTurn(-50,-15,3);
     //driveInches(50,10);
     servo.SetDegree(2);
     Sleep(1.0);
     //driving up ramp
     driveInches(-50,15.5);
-    gradualTurn(-50,-6,.56);
+    //-50,-6,.56
+    gradualTurn(-50,-5,.6);
     //done with gradual
     driveInches(-50,15);
-    Sleep(1.0);
+    Sleep(.1);
     float val = moveWhileSensing(-50,30);
     LCD.WriteLine(val);
-    Sleep(3.0);
+    Sleep(.1);
     driveInches(50,20);
-    Sleep(1.0);
-    gradualTurn(-50,-4,.5);
-    Sleep(1.0);
+    Sleep(.1);
+    //was .5
+    //was 50 -4 .6
+    gradualTurn(-52,-4,.6);
+    Sleep(.1);
     //was 20
     driveInches(-50,27);
-    Sleep(1.0);
+    Sleep(.1);
     //test default >.7 = blue
     //int val=.8;
     LCD.WriteLine(val);
@@ -264,7 +272,7 @@ int main(void)
         LCD.SetFontColor(RED);
         LCD.WriteLine(": Red");
         LCD.SetFontColor(BLACK);
-        Sleep(1.0);
+        Sleep(.1);
         driveInches(50,10);
         
     }
@@ -273,25 +281,25 @@ int main(void)
         LCD.SetFontColor(BLUE);
         LCD.WriteLine(": Blue");
         LCD.SetFontColor(BLACK);
-        Sleep(1.0);
+        Sleep(.1);
         //was 5
         driveInches(50,4);
     }
-    Sleep(2.0);
+    Sleep(.1);
     //was 1.0
     gradualTurn(-7,50,1.2);
-    Sleep(1.0);
+    Sleep(.1);
     //was 15
-    driveInches(60,20);
-    Sleep(1.0);
+    driveInches(60,25);
+    Sleep(.1);
     gradualTurn(7,-50,1.5);
-    Sleep(1.0);
+    Sleep(.1);
     driveInches(-50,15);
-    Sleep(1.0);
+    Sleep(.1);
     //now for passport
-    //was 29 50 1.8
-    gradualTurn(25,50,1.8);
-    Sleep(.5);
+    //was 25 50 1.8
+    gradualTurn(24,50,1.8);
+    Sleep(.1);
     driveInches(50,10);
     //right_motor.SetPercent(-50);
     //Sleep(.5);
@@ -300,8 +308,8 @@ int main(void)
     servo.SetDegree(179);
     Sleep(2.0);
     driveInches(50,2);
-    Sleep(1.0);
-    driveInches(-50,.4);
+    Sleep(.1);
+    driveInches(-50,.5);
     servo.SetDegree(140);
     Sleep(2.0);
     //was -50
@@ -329,18 +337,18 @@ int main(void)
     left_motor.Stop();
     gradualTurn(30,50,3);
     driveInches(50,25);
-    Sleep(1.0);
+    Sleep(.1);
     //was -50
     //right_motor.SetPercent(-80);
     //Sleep(1.0);
     //right_motor.Stop();
-    Sleep(1.0);
+    Sleep(.1);
     driveInches(-50,.2);
     gradualTurn(7,-50,1);
-    Sleep(1.0);
+    Sleep(.1);
     driveInches(-50,4);
-    Sleep(1.0);
-    driveInches(60,38);
+    Sleep(.1);
+    driveInches(60,36);
     right_motor.SetPercent(-75);
     Sleep(2.0);
     right_motor.Stop();
@@ -351,7 +359,7 @@ int main(void)
     while (true)
     {
         driveInches(-50,3);
-        gradualTurn(50,45,1);
+        gradualTurn(50,35,1);
         driveInches(60,3);
         right_motor.SetPercent(-75);
         Sleep(1.0);
